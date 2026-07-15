@@ -67,7 +67,13 @@ jobs:
       - name: Create GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "${GITHUB_REF_NAME}" "artifacts/${ARCHIVE}" --title "Send to Kindle ${PLUGIN_VERSION}" --generate-notes --verify-tag
+        shell: bash
+        run: |
+          if gh release view "${GITHUB_REF_NAME}" > /dev/null 2>&1; then
+            gh release upload "${GITHUB_REF_NAME}" "artifacts/${ARCHIVE}" --clobber
+          else
+            gh release create "${GITHUB_REF_NAME}" "artifacts/${ARCHIVE}" --title "Send to Kindle ${PLUGIN_VERSION}" --generate-notes --verify-tag
+          fi
 
       - name: Update Jellyfin repository manifest
         env:
@@ -79,7 +85,6 @@ jobs:
             git -C manifest-worktree switch --create manifest --track origin/manifest
           else
             git -C manifest-worktree switch --orphan manifest
-            git -C manifest-worktree rm -rf .
           fi
           python3 scripts/update_manifest.py \
             --path manifest-worktree/manifest.json \
