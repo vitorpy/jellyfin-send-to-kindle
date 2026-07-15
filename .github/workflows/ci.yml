@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Restore
+        run: dotnet restore Jellyfin.Plugin.SendToKindle.slnx
+
+      - name: Build
+        run: dotnet build Jellyfin.Plugin.SendToKindle.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Jellyfin.Plugin.SendToKindle.slnx --configuration Release --no-build
+
+      - name: Publish
+        run: dotnet publish Jellyfin.Plugin.SendToKindle/Jellyfin.Plugin.SendToKindle.csproj --configuration Release --no-restore --output artifacts/publish
+
+      - name: Package
+        shell: bash
+        run: |
+          mkdir -p artifacts/package
+          while IFS= read -r artifact; do
+            test -f "artifacts/publish/${artifact}"
+            cp "artifacts/publish/${artifact}" artifacts/package/
+          done < <(python3 -c 'import json; print(*json.load(open("build.yaml"))["artifacts"], sep="\n")')
+          (cd artifacts/package && zip -9 -r ../send-to-kindle.zip .)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: jellyfin-send-to-kindle-${{ github.sha }}
+          path: artifacts/send-to-kindle.zip
+          if-no-files-found: error

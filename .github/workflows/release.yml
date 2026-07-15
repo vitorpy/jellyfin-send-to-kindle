@@ -1,0 +1,96 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Read and validate metadata
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          import json
+          import os
+
+          with open("build.yaml", encoding="utf-8") as source:
+              config = json.load(source)
+          with open(os.environ["GITHUB_ENV"], "a", encoding="utf-8") as destination:
+              destination.write(f"PLUGIN_VERSION={config['version']}\n")
+              destination.write(f"TARGET_ABI={config['targetAbi']}\n")
+              destination.write(f"CHANGELOG={config['changelog']}\n")
+          PY
+          test "${GITHUB_REF_NAME}" = "v$(python3 -c 'import json; print(json.load(open("build.yaml"))["version"])')"
+
+      - name: Restore
+        run: dotnet restore Jellyfin.Plugin.SendToKindle.slnx
+
+      - name: Build
+        run: dotnet build Jellyfin.Plugin.SendToKindle.slnx --configuration Release --no-restore
+
+      - name: Test
+        run: dotnet test Jellyfin.Plugin.SendToKindle.slnx --configuration Release --no-build
+
+      - name: Publish and package
+        shell: bash
+        run: |
+          dotnet publish Jellyfin.Plugin.SendToKindle/Jellyfin.Plugin.SendToKindle.csproj --configuration Release --no-restore --output artifacts/publish
+          mkdir -p artifacts/package
+          while IFS= read -r artifact; do
+            test -f "artifacts/publish/${artifact}"
+            cp "artifacts/publish/${artifact}" artifacts/package/
+          done < <(python3 -c 'import json; print(*json.load(open("build.yaml"))["artifacts"], sep="\n")')
+          ARCHIVE="send-to-kindle_${PLUGIN_VERSION}.zip"
+          (cd artifacts/package && zip -9 -r "../${ARCHIVE}" .)
+          CHECKSUM=$(md5sum "artifacts/${ARCHIVE}" | cut -d " " -f 1)
+          RELEASE_TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          {
+            echo "ARCHIVE=${ARCHIVE}"
+            echo "CHECKSUM=${CHECKSUM}"
+            echo "RELEASE_TIMESTAMP=${RELEASE_TIMESTAMP}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Create GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release create "${GITHUB_REF_NAME}" "artifacts/${ARCHIVE}" --title "Send to Kindle ${PLUGIN_VERSION}" --generate-notes --verify-tag
+
+      - name: Update Jellyfin repository manifest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          git clone "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" manifest-worktree
+          if git -C manifest-worktree show-ref --verify --quiet refs/remotes/origin/manifest; then
+            git -C manifest-worktree switch --create manifest --track origin/manifest
+          else
+            git -C manifest-worktree switch --orphan manifest
+            git -C manifest-worktree rm -rf .
+          fi
+          python3 scripts/update_manifest.py \
+            --path manifest-worktree/manifest.json \
+            --version "${PLUGIN_VERSION}" \
+            --target-abi "${TARGET_ABI}" \
+            --source-url "https://github.com/${GITHUB_REPOSITORY}/releases/download/${GITHUB_REF_NAME}/${ARCHIVE}" \
+            --checksum "${CHECKSUM}" \
+            --timestamp "${RELEASE_TIMESTAMP}" \
+            --changelog "${CHANGELOG}"
+          git -C manifest-worktree config user.name github-actions
+          git -C manifest-worktree config user.email github-actions@github.com
+          git -C manifest-worktree add manifest.json
+          git -C manifest-worktree commit -m "Update manifest for ${PLUGIN_VERSION}"
+          git -C manifest-worktree push origin manifest

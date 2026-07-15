@@ -1,0 +1,248 @@
+<div id="SendToKindleConfigPage" data-role="page" class="page type-interior pluginConfigurationPage" data-require="emby-input,emby-button,emby-select,emby-checkbox">
+    <div data-role="content">
+        <div class="content-primary">
+            <form id="SendToKindleConfigForm">
+                <h1>Send to Kindle</h1>
+
+                <h2>SMTP</h2>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="SmtpHost">Host</label>
+                    <input id="SmtpHost" is="emby-input" type="text" autocomplete="off" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="SmtpPort">Port</label>
+                    <input id="SmtpPort" is="emby-input" type="number" min="1" max="65535" required />
+                </div>
+                <div class="selectContainer">
+                    <label class="selectLabel" for="SmtpSecurity">Security</label>
+                    <select id="SmtpSecurity" is="emby-select">
+                        <option value="0">Auto</option>
+                        <option value="1">STARTTLS</option>
+                        <option value="2">TLS on connect</option>
+                        <option value="3">None</option>
+                    </select>
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="SmtpUsername">Username</label>
+                    <input id="SmtpUsername" is="emby-input" type="text" autocomplete="username" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="SmtpPassword">Password</label>
+                    <input id="SmtpPassword" is="emby-input" type="password" autocomplete="current-password" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="SenderAddress">Sender address</label>
+                    <input id="SenderAddress" is="emby-input" type="email" autocomplete="email" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KindleAddress">Kindle address</label>
+                    <input id="KindleAddress" is="emby-input" type="email" autocomplete="off" />
+                </div>
+
+                <h2>Conversion</h2>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccExecutable">KCC executable</label>
+                    <input id="KccExecutable" is="emby-input" type="text" required />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="CalibreExecutable">Calibre executable</label>
+                    <input id="CalibreExecutable" is="emby-input" type="text" required />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="TemporaryDirectory">Temporary directory</label>
+                    <input id="TemporaryDirectory" is="emby-input" type="text" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="AttachmentLimitMegabytes">Attachment limit (MB)</label>
+                    <input id="AttachmentLimitMegabytes" is="emby-input" type="number" min="1" max="50" required />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="ConversionTimeoutMinutes">Timeout (minutes)</label>
+                    <input id="ConversionTimeoutMinutes" is="emby-input" type="number" min="1" max="180" required />
+                </div>
+
+                <h2>KCC</h2>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccProfile">Device profile</label>
+                    <input id="KccProfile" is="emby-input" type="text" required />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccGamma">Gamma</label>
+                    <input id="KccGamma" is="emby-input" type="text" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccSplitter">Splitter</label>
+                    <input id="KccSplitter" is="emby-input" type="number" min="0" max="2" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccCropping">Cropping</label>
+                    <input id="KccCropping" is="emby-input" type="number" min="0" max="2" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccCroppingPower">Cropping power</label>
+                    <input id="KccCroppingPower" is="emby-input" type="number" min="0" max="2" step="0.05" />
+                </div>
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccJpegQuality">JPEG quality</label>
+                    <input id="KccJpegQuality" is="emby-input" type="number" min="0" max="95" />
+                </div>
+
+                <label class="checkboxContainer"><input id="KccMangaStyle" is="emby-checkbox" type="checkbox" /><span>Manga style</span></label>
+                <label class="checkboxContainer"><input id="KccHighQuality" is="emby-checkbox" type="checkbox" /><span>High quality</span></label>
+                <label class="checkboxContainer"><input id="KccTwoPanel" is="emby-checkbox" type="checkbox" /><span>Two-panel mode</span></label>
+                <label class="checkboxContainer"><input id="KccWebtoon" is="emby-checkbox" type="checkbox" /><span>Webtoon mode</span></label>
+                <label class="checkboxContainer"><input id="KccUpscale" is="emby-checkbox" type="checkbox" /><span>Upscale</span></label>
+                <label class="checkboxContainer"><input id="KccStretch" is="emby-checkbox" type="checkbox" /><span>Stretch</span></label>
+                <label class="checkboxContainer"><input id="KccAutoLevel" is="emby-checkbox" type="checkbox" /><span>Auto level</span></label>
+                <label class="checkboxContainer"><input id="KccDisableAutoContrast" is="emby-checkbox" type="checkbox" /><span>Disable auto contrast</span></label>
+                <label class="checkboxContainer"><input id="KccForceColor" is="emby-checkbox" type="checkbox" /><span>Force color</span></label>
+                <label class="checkboxContainer"><input id="KccSpreadShift" is="emby-checkbox" type="checkbox" /><span>Spread shift</span></label>
+                <label class="checkboxContainer"><input id="KccOnePageLandscape" is="emby-checkbox" type="checkbox" /><span>One page in landscape</span></label>
+
+                <div class="inputContainer">
+                    <label class="inputLabel inputLabelUnfocused" for="KccAdvancedArguments">Advanced arguments</label>
+                    <input id="KccAdvancedArguments" is="emby-input" type="text" autocomplete="off" />
+                </div>
+
+                <div style="display:flex;flex-wrap:wrap;gap:.75em;margin-top:2em">
+                    <button is="emby-button" type="submit" class="raised button-submit block"><span>Save</span></button>
+                    <button id="TestSmtp" is="emby-button" type="button" class="raised block"><span>Test SMTP</span></button>
+                    <button id="TestConverters" is="emby-button" type="button" class="raised block"><span>Test converters</span></button>
+                </div>
+                <div id="DiagnosticResult" role="status" style="margin-top:1em;white-space:pre-wrap"></div>
+            </form>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        (() => {
+            const pluginId = '4c4061d6-1c66-4a34-99f9-bbf618c51621';
+            const page = document.querySelector('#SendToKindleConfigPage');
+            const form = page.querySelector('#SendToKindleConfigForm');
+            const value = id => page.querySelector(`#${id}`).value;
+            const checked = id => page.querySelector(`#${id}`).checked;
+            const setValue = (id, next) => { page.querySelector(`#${id}`).value = next ?? ''; };
+            const setChecked = (id, next) => { page.querySelector(`#${id}`).checked = Boolean(next); };
+
+            function showResult(lines) {
+                page.querySelector('#DiagnosticResult').textContent = Array.isArray(lines) ? lines.join('\n') : lines;
+            }
+
+            async function loadConfiguration() {
+                Dashboard.showLoadingMsg();
+                try {
+                    const config = await ApiClient.getPluginConfiguration(pluginId);
+                    setValue('SmtpHost', config.SmtpHost);
+                    setValue('SmtpPort', config.SmtpPort);
+                    setValue('SmtpSecurity', config.SmtpSecurity);
+                    setValue('SmtpUsername', config.SmtpUsername);
+                    setValue('SmtpPassword', config.SmtpPassword);
+                    setValue('SenderAddress', config.SenderAddress);
+                    setValue('KindleAddress', config.KindleAddress);
+                    setValue('KccExecutable', config.KccExecutable);
+                    setValue('CalibreExecutable', config.CalibreExecutable);
+                    setValue('TemporaryDirectory', config.TemporaryDirectory);
+                    setValue('AttachmentLimitMegabytes', config.AttachmentLimitMegabytes);
+                    setValue('ConversionTimeoutMinutes', config.ConversionTimeoutMinutes);
+
+                    const kcc = config.Kcc || {};
+                    setValue('KccProfile', kcc.Profile);
+                    setValue('KccGamma', kcc.Gamma);
+                    setValue('KccSplitter', kcc.Splitter);
+                    setValue('KccCropping', kcc.Cropping);
+                    setValue('KccCroppingPower', kcc.CroppingPower);
+                    setValue('KccJpegQuality', kcc.JpegQuality);
+                    setChecked('KccMangaStyle', kcc.MangaStyle);
+                    setChecked('KccHighQuality', kcc.HighQuality);
+                    setChecked('KccTwoPanel', kcc.TwoPanel);
+                    setChecked('KccWebtoon', kcc.Webtoon);
+                    setChecked('KccUpscale', kcc.Upscale);
+                    setChecked('KccStretch', kcc.Stretch);
+                    setChecked('KccAutoLevel', kcc.AutoLevel);
+                    setChecked('KccDisableAutoContrast', kcc.DisableAutoContrast);
+                    setChecked('KccForceColor', kcc.ForceColor);
+                    setChecked('KccSpreadShift', kcc.SpreadShift);
+                    setChecked('KccOnePageLandscape', kcc.OnePageLandscape);
+                    setValue('KccAdvancedArguments', kcc.AdvancedArguments);
+                } finally {
+                    Dashboard.hideLoadingMsg();
+                }
+            }
+
+            page.addEventListener('pageshow', loadConfiguration);
+            form.addEventListener('submit', async event => {
+                event.preventDefault();
+                Dashboard.showLoadingMsg();
+                try {
+                    const config = await ApiClient.getPluginConfiguration(pluginId);
+                    Object.assign(config, {
+                        SmtpHost: value('SmtpHost').trim(),
+                        SmtpPort: Number(value('SmtpPort')),
+                        SmtpSecurity: Number(value('SmtpSecurity')),
+                        SmtpUsername: value('SmtpUsername'),
+                        SmtpPassword: value('SmtpPassword'),
+                        SenderAddress: value('SenderAddress').trim(),
+                        KindleAddress: value('KindleAddress').trim(),
+                        KccExecutable: value('KccExecutable').trim(),
+                        CalibreExecutable: value('CalibreExecutable').trim(),
+                        TemporaryDirectory: value('TemporaryDirectory').trim(),
+                        AttachmentLimitMegabytes: Number(value('AttachmentLimitMegabytes')),
+                        ConversionTimeoutMinutes: Number(value('ConversionTimeoutMinutes')),
+                        Kcc: {
+                            Profile: value('KccProfile').trim(),
+                            Gamma: value('KccGamma').trim(),
+                            Splitter: Number(value('KccSplitter')),
+                            Cropping: Number(value('KccCropping')),
+                            CroppingPower: Number(value('KccCroppingPower')),
+                            JpegQuality: Number(value('KccJpegQuality')),
+                            MangaStyle: checked('KccMangaStyle'),
+                            HighQuality: checked('KccHighQuality'),
+                            TwoPanel: checked('KccTwoPanel'),
+                            Webtoon: checked('KccWebtoon'),
+                            Upscale: checked('KccUpscale'),
+                            Stretch: checked('KccStretch'),
+                            AutoLevel: checked('KccAutoLevel'),
+                            DisableAutoContrast: checked('KccDisableAutoContrast'),
+                            ForceColor: checked('KccForceColor'),
+                            SpreadShift: checked('KccSpreadShift'),
+                            OnePageLandscape: checked('KccOnePageLandscape'),
+                            AdvancedArguments: value('KccAdvancedArguments').trim()
+                        }
+                    });
+                    const result = await ApiClient.updatePluginConfiguration(pluginId, config);
+                    Dashboard.processPluginConfigurationUpdateResult(result);
+                } finally {
+                    Dashboard.hideLoadingMsg();
+                }
+            });
+
+            page.querySelector('#TestSmtp').addEventListener('click', async () => {
+                Dashboard.showLoadingMsg();
+                try {
+                    const result = await ApiClient.ajax({
+                        type: 'POST',
+                        url: ApiClient.getUrl('SendToKindle/Diagnostics/Smtp'),
+                        dataType: 'json'
+                    });
+                    showResult(`${result.Name}: ${result.Success ? 'OK' : 'FAILED'} - ${result.Message}`);
+                } finally {
+                    Dashboard.hideLoadingMsg();
+                }
+            });
+
+            page.querySelector('#TestConverters').addEventListener('click', async () => {
+                Dashboard.showLoadingMsg();
+                try {
+                    const results = await ApiClient.ajax({
+                        type: 'POST',
+                        url: ApiClient.getUrl('SendToKindle/Diagnostics/Converters'),
+                        dataType: 'json'
+                    });
+                    showResult(results.map(result => `${result.Name}: ${result.Success ? 'OK' : 'FAILED'} - ${result.Message}`));
+                } finally {
+                    Dashboard.hideLoadingMsg();
+                }
+            });
+        })();
+    </script>
+</div>

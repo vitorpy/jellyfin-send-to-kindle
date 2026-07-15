@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Jellyfin.Plugin.SendToKindle/Jellyfin.Plugin.SendToKindle.csproj" />
+  <Project Path="tests/Jellyfin.Plugin.SendToKindle.Tests/Jellyfin.Plugin.SendToKindle.Tests.csproj" />
+</Solution>

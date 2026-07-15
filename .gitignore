@@ -1,0 +1,11 @@
+bin/
+obj/
+TestResults/
+artifacts/
+publish/
+*.user
+*.suo
+*.nupkg
+node_modules/
+__pycache__/
+*.pyc
