@@ -11,13 +11,13 @@
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="SmtpPort">Port</label>
-                    <input id="SmtpPort" is="emby-input" type="number" min="1" max="65535" required />
+                    <input id="SmtpPort" is="emby-input" type="number" min="1" max="65535" value="587" required />
                 </div>
                 <div class="selectContainer">
                     <label class="selectLabel" for="SmtpSecurity">Security</label>
                     <select id="SmtpSecurity" is="emby-select">
                         <option value="0">Auto</option>
-                        <option value="1">STARTTLS</option>
+                        <option value="1" selected>STARTTLS</option>
                         <option value="2">TLS on connect</option>
                         <option value="3">None</option>
                     </select>
@@ -42,11 +42,11 @@
                 <h2>Conversion</h2>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccExecutable">KCC executable</label>
-                    <input id="KccExecutable" is="emby-input" type="text" required />
+                    <input id="KccExecutable" is="emby-input" type="text" value="kcc-c2e" required />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="CalibreExecutable">Calibre executable</label>
-                    <input id="CalibreExecutable" is="emby-input" type="text" required />
+                    <input id="CalibreExecutable" is="emby-input" type="text" value="ebook-convert" required />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="TemporaryDirectory">Temporary directory</label>
@@ -54,37 +54,37 @@
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="AttachmentLimitMegabytes">Attachment limit (MB)</label>
-                    <input id="AttachmentLimitMegabytes" is="emby-input" type="number" min="1" max="50" required />
+                    <input id="AttachmentLimitMegabytes" is="emby-input" type="number" min="1" max="50" value="18" required />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="ConversionTimeoutMinutes">Timeout (minutes)</label>
-                    <input id="ConversionTimeoutMinutes" is="emby-input" type="number" min="1" max="180" required />
+                    <input id="ConversionTimeoutMinutes" is="emby-input" type="number" min="1" max="180" value="30" required />
                 </div>
 
                 <h2>KCC</h2>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccProfile">Device profile</label>
-                    <input id="KccProfile" is="emby-input" type="text" required />
+                    <input id="KccProfile" is="emby-input" type="text" value="KV" required />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccGamma">Gamma</label>
-                    <input id="KccGamma" is="emby-input" type="text" />
+                    <input id="KccGamma" is="emby-input" type="text" value="Auto" />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccSplitter">Splitter</label>
-                    <input id="KccSplitter" is="emby-input" type="number" min="0" max="2" />
+                    <input id="KccSplitter" is="emby-input" type="number" min="0" max="2" value="0" />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccCropping">Cropping</label>
-                    <input id="KccCropping" is="emby-input" type="number" min="0" max="2" />
+                    <input id="KccCropping" is="emby-input" type="number" min="0" max="2" value="2" />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccCroppingPower">Cropping power</label>
-                    <input id="KccCroppingPower" is="emby-input" type="number" min="0" max="2" step="0.05" />
+                    <input id="KccCroppingPower" is="emby-input" type="number" min="0" max="2" step="0.05" value="1" />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccJpegQuality">JPEG quality</label>
-                    <input id="KccJpegQuality" is="emby-input" type="number" min="0" max="95" />
+                    <input id="KccJpegQuality" is="emby-input" type="number" min="0" max="95" value="85" />
                 </div>
 
                 <label class="checkboxContainer"><input id="KccMangaStyle" is="emby-checkbox" type="checkbox" /><span>Manga style</span></label>
@@ -123,6 +123,54 @@
             const checked = id => page.querySelector('#' + id).checked;
             const setValue = (id, next) => { page.querySelector('#' + id).value = next ?? ''; };
             const setChecked = (id, next) => { page.querySelector('#' + id).checked = Boolean(next); };
+            const defaults = {
+                SmtpHost: '',
+                SmtpPort: 587,
+                SmtpSecurity: 1,
+                SmtpUsername: '',
+                SmtpPassword: '',
+                SenderAddress: '',
+                KindleAddress: '',
+                KccExecutable: 'kcc-c2e',
+                CalibreExecutable: 'ebook-convert',
+                TemporaryDirectory: '',
+                AttachmentLimitMegabytes: 18,
+                ConversionTimeoutMinutes: 30,
+                Kcc: {
+                    Profile: 'KV',
+                    Gamma: 'Auto',
+                    Splitter: 0,
+                    Cropping: 2,
+                    CroppingPower: 1,
+                    JpegQuality: 85,
+                    MangaStyle: false,
+                    HighQuality: false,
+                    TwoPanel: false,
+                    Webtoon: false,
+                    Upscale: false,
+                    Stretch: false,
+                    AutoLevel: false,
+                    DisableAutoContrast: false,
+                    ForceColor: false,
+                    SpreadShift: false,
+                    OnePageLandscape: false,
+                    AdvancedArguments: ''
+                }
+            };
+
+            function readProperty(source, name, fallback) {
+                if (!source) {
+                    return fallback;
+                }
+
+                const camelName = name.charAt(0).toLowerCase() + name.slice(1);
+                return source[name] ?? source[camelName] ?? fallback;
+            }
+
+            function readNumber(source, name, fallback, minimum, maximum) {
+                const next = Number(readProperty(source, name, fallback));
+                return Number.isFinite(next) && next >= minimum && next <= maximum ? next : fallback;
+            }
 
             function showResult(lines) {
                 page.querySelector('#DiagnosticResult').textContent = Array.isArray(lines) ? lines.join('\n') : lines;
@@ -139,38 +187,50 @@
                 Dashboard.showLoadingMsg();
                 try {
                     const config = await ApiClient.getPluginConfiguration(pluginId);
-                    setValue('SmtpHost', config.SmtpHost);
-                    setValue('SmtpPort', config.SmtpPort);
-                    setValue('SmtpSecurity', config.SmtpSecurity);
-                    setValue('SmtpUsername', config.SmtpUsername);
-                    setValue('SmtpPassword', config.SmtpPassword);
-                    setValue('SenderAddress', config.SenderAddress);
-                    setValue('KindleAddress', config.KindleAddress);
-                    setValue('KccExecutable', config.KccExecutable);
-                    setValue('CalibreExecutable', config.CalibreExecutable);
-                    setValue('TemporaryDirectory', config.TemporaryDirectory);
-                    setValue('AttachmentLimitMegabytes', config.AttachmentLimitMegabytes);
-                    setValue('ConversionTimeoutMinutes', config.ConversionTimeoutMinutes);
+                    setValue('SmtpHost', readProperty(config, 'SmtpHost', defaults.SmtpHost));
+                    setValue('SmtpPort', readNumber(config, 'SmtpPort', defaults.SmtpPort, 1, 65535));
+                    setValue('SmtpSecurity', readNumber(config, 'SmtpSecurity', defaults.SmtpSecurity, 0, 3));
+                    setValue('SmtpUsername', readProperty(config, 'SmtpUsername', defaults.SmtpUsername));
+                    setValue('SmtpPassword', readProperty(config, 'SmtpPassword', defaults.SmtpPassword));
+                    setValue('SenderAddress', readProperty(config, 'SenderAddress', defaults.SenderAddress));
+                    setValue('KindleAddress', readProperty(config, 'KindleAddress', defaults.KindleAddress));
+                    setValue('KccExecutable', readProperty(config, 'KccExecutable', defaults.KccExecutable));
+                    setValue('CalibreExecutable', readProperty(config, 'CalibreExecutable', defaults.CalibreExecutable));
+                    setValue('TemporaryDirectory', readProperty(config, 'TemporaryDirectory', defaults.TemporaryDirectory));
+                    setValue(
+                        'AttachmentLimitMegabytes',
+                        readNumber(config, 'AttachmentLimitMegabytes', defaults.AttachmentLimitMegabytes, 1, 50));
+                    setValue(
+                        'ConversionTimeoutMinutes',
+                        readNumber(config, 'ConversionTimeoutMinutes', defaults.ConversionTimeoutMinutes, 1, 180));
 
-                    const kcc = config.Kcc || {};
-                    setValue('KccProfile', kcc.Profile);
-                    setValue('KccGamma', kcc.Gamma);
-                    setValue('KccSplitter', kcc.Splitter);
-                    setValue('KccCropping', kcc.Cropping);
-                    setValue('KccCroppingPower', kcc.CroppingPower);
-                    setValue('KccJpegQuality', kcc.JpegQuality);
-                    setChecked('KccMangaStyle', kcc.MangaStyle);
-                    setChecked('KccHighQuality', kcc.HighQuality);
-                    setChecked('KccTwoPanel', kcc.TwoPanel);
-                    setChecked('KccWebtoon', kcc.Webtoon);
-                    setChecked('KccUpscale', kcc.Upscale);
-                    setChecked('KccStretch', kcc.Stretch);
-                    setChecked('KccAutoLevel', kcc.AutoLevel);
-                    setChecked('KccDisableAutoContrast', kcc.DisableAutoContrast);
-                    setChecked('KccForceColor', kcc.ForceColor);
-                    setChecked('KccSpreadShift', kcc.SpreadShift);
-                    setChecked('KccOnePageLandscape', kcc.OnePageLandscape);
-                    setValue('KccAdvancedArguments', kcc.AdvancedArguments);
+                    const kcc = readProperty(config, 'Kcc', defaults.Kcc);
+                    setValue('KccProfile', readProperty(kcc, 'Profile', defaults.Kcc.Profile));
+                    setValue('KccGamma', readProperty(kcc, 'Gamma', defaults.Kcc.Gamma));
+                    setValue('KccSplitter', readNumber(kcc, 'Splitter', defaults.Kcc.Splitter, 0, 2));
+                    setValue('KccCropping', readNumber(kcc, 'Cropping', defaults.Kcc.Cropping, 0, 2));
+                    setValue(
+                        'KccCroppingPower',
+                        readNumber(kcc, 'CroppingPower', defaults.Kcc.CroppingPower, 0, 2));
+                    setValue('KccJpegQuality', readNumber(kcc, 'JpegQuality', defaults.Kcc.JpegQuality, 0, 95));
+                    setChecked('KccMangaStyle', readProperty(kcc, 'MangaStyle', defaults.Kcc.MangaStyle));
+                    setChecked('KccHighQuality', readProperty(kcc, 'HighQuality', defaults.Kcc.HighQuality));
+                    setChecked('KccTwoPanel', readProperty(kcc, 'TwoPanel', defaults.Kcc.TwoPanel));
+                    setChecked('KccWebtoon', readProperty(kcc, 'Webtoon', defaults.Kcc.Webtoon));
+                    setChecked('KccUpscale', readProperty(kcc, 'Upscale', defaults.Kcc.Upscale));
+                    setChecked('KccStretch', readProperty(kcc, 'Stretch', defaults.Kcc.Stretch));
+                    setChecked('KccAutoLevel', readProperty(kcc, 'AutoLevel', defaults.Kcc.AutoLevel));
+                    setChecked(
+                        'KccDisableAutoContrast',
+                        readProperty(kcc, 'DisableAutoContrast', defaults.Kcc.DisableAutoContrast));
+                    setChecked('KccForceColor', readProperty(kcc, 'ForceColor', defaults.Kcc.ForceColor));
+                    setChecked('KccSpreadShift', readProperty(kcc, 'SpreadShift', defaults.Kcc.SpreadShift));
+                    setChecked(
+                        'KccOnePageLandscape',
+                        readProperty(kcc, 'OnePageLandscape', defaults.Kcc.OnePageLandscape));
+                    setValue(
+                        'KccAdvancedArguments',
+                        readProperty(kcc, 'AdvancedArguments', defaults.Kcc.AdvancedArguments));
                 } finally {
                     Dashboard.hideLoadingMsg();
                 }
