@@ -1,7 +1,7 @@
 {
   "name": "Send to Kindle",
   "guid": "4c4061d6-1c66-4a34-99f9-bbf618c51621",
-  "version": "1.0.0.1",
+  "version": "1.0.0.2",
   "targetAbi": "10.11.0.0",
   "framework": "net9.0",
   "overview": "Convert books and send them to Kindle from Jellyfin",
@@ -14,5 +14,5 @@
     "MimeKit.dll",
     "BouncyCastle.Cryptography.dll"
   ],
-  "changelog": "Initial release with manifest publication fix"
+  "changelog": "Fix converter diagnostics and configuration field selectors in Jellyfin Web"
 }

@@ -119,13 +119,20 @@
             const pluginId = '4c4061d6-1c66-4a34-99f9-bbf618c51621';
             const page = document.querySelector('#SendToKindleConfigPage');
             const form = page.querySelector('#SendToKindleConfigForm');
-            const value = id => page.querySelector(`#${id}`).value;
-            const checked = id => page.querySelector(`#${id}`).checked;
-            const setValue = (id, next) => { page.querySelector(`#${id}`).value = next ?? ''; };
-            const setChecked = (id, next) => { page.querySelector(`#${id}`).checked = Boolean(next); };
+            const value = id => page.querySelector('#' + id).value;
+            const checked = id => page.querySelector('#' + id).checked;
+            const setValue = (id, next) => { page.querySelector('#' + id).value = next ?? ''; };
+            const setChecked = (id, next) => { page.querySelector('#' + id).checked = Boolean(next); };
 
             function showResult(lines) {
                 page.querySelector('#DiagnosticResult').textContent = Array.isArray(lines) ? lines.join('\n') : lines;
+            }
+
+            function formatDiagnostic(result) {
+                const name = result.Name ?? result.name ?? 'Check';
+                const success = result.Success ?? result.success ?? false;
+                const message = result.Message ?? result.message ?? '';
+                return name + ': ' + (success ? 'OK' : 'FAILED') + ' - ' + message;
             }
 
             async function loadConfiguration() {
@@ -224,7 +231,7 @@
                         url: ApiClient.getUrl('SendToKindle/Diagnostics/Smtp'),
                         dataType: 'json'
                     });
-                    showResult(`${result.Name}: ${result.Success ? 'OK' : 'FAILED'} - ${result.Message}`);
+                    showResult(formatDiagnostic(result));
                 } finally {
                     Dashboard.hideLoadingMsg();
                 }
@@ -238,7 +245,7 @@
                         url: ApiClient.getUrl('SendToKindle/Diagnostics/Converters'),
                         dataType: 'json'
                     });
-                    showResult(results.map(result => `${result.Name}: ${result.Success ? 'OK' : 'FAILED'} - ${result.Message}`));
+                    showResult(results.map(formatDiagnostic));
                 } finally {
                     Dashboard.hideLoadingMsg();
                 }
