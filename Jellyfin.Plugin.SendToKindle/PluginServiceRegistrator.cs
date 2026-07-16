@@ -1,5 +1,6 @@
 using Jellyfin.Plugin.SendToKindle.Configuration;
 using Jellyfin.Plugin.SendToKindle.Conversion;
+using Jellyfin.Plugin.SendToKindle.Diagnostics;
 using Jellyfin.Plugin.SendToKindle.Email;
 using Jellyfin.Plugin.SendToKindle.Jobs;
 using Jellyfin.Plugin.SendToKindle.WebIntegration;
@@ -16,6 +17,7 @@ public sealed class PluginServiceRegistrator : IPluginServiceRegistrator
     {
         serviceCollection.AddSingleton<IPluginConfigurationAccessor, PluginConfigurationAccessor>();
         serviceCollection.AddSingleton<IProcessRunner, ProcessRunner>();
+        serviceCollection.AddSingleton<IConverterDiagnosticService, ConverterDiagnosticService>();
         serviceCollection.AddSingleton<AdvancedArgumentParser>();
         serviceCollection.AddSingleton<KccArgumentBuilder>();
         serviceCollection.AddSingleton<IBookConversionService, BookConversionService>();

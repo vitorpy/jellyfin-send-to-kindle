@@ -1,6 +1,6 @@
 using System.Reflection;
-using Jellyfin.Plugin.SendToKindle.Configuration;
 using Jellyfin.Plugin.SendToKindle.Conversion;
+using Jellyfin.Plugin.SendToKindle.Diagnostics;
 using Jellyfin.Plugin.SendToKindle.Email;
 using Jellyfin.Plugin.SendToKindle.Jobs;
 using Jellyfin.Plugin.SendToKindle.WebIntegration;
@@ -20,24 +20,21 @@ public sealed class SendToKindleController : ControllerBase
 {
     private readonly ILibraryManager _libraryManager;
     private readonly ISendJobQueue _jobQueue;
-    private readonly IProcessRunner _processRunner;
+    private readonly IConverterDiagnosticService _converterDiagnosticService;
     private readonly ISmtpDeliveryService _smtpDeliveryService;
-    private readonly IPluginConfigurationAccessor _configurationAccessor;
     private readonly IWebIntegrationStatus _webIntegrationStatus;
 
     public SendToKindleController(
         ILibraryManager libraryManager,
         ISendJobQueue jobQueue,
-        IProcessRunner processRunner,
+        IConverterDiagnosticService converterDiagnosticService,
         ISmtpDeliveryService smtpDeliveryService,
-        IPluginConfigurationAccessor configurationAccessor,
         IWebIntegrationStatus webIntegrationStatus)
     {
         _libraryManager = libraryManager;
         _jobQueue = jobQueue;
-        _processRunner = processRunner;
+        _converterDiagnosticService = converterDiagnosticService;
         _smtpDeliveryService = smtpDeliveryService;
-        _configurationAccessor = configurationAccessor;
         _webIntegrationStatus = webIntegrationStatus;
     }
 
@@ -112,46 +109,10 @@ public sealed class SendToKindleController : ControllerBase
     public async Task<ActionResult<IReadOnlyList<DependencyCheckResult>>> CheckConverters(
         CancellationToken cancellationToken)
     {
-        PluginConfiguration configuration = _configurationAccessor.Current;
-        DependencyCheckResult[] results =
-        {
-            await CheckExecutableAsync("KCC", configuration.KccExecutable, cancellationToken).ConfigureAwait(false),
-            await CheckExecutableAsync("Calibre", configuration.CalibreExecutable, cancellationToken).ConfigureAwait(false),
-        };
+        IReadOnlyList<DependencyCheckResult> results = await _converterDiagnosticService
+            .CheckAsync(cancellationToken)
+            .ConfigureAwait(false);
         return Ok(results);
-    }
-
-    private async Task<DependencyCheckResult> CheckExecutableAsync(
-        string name,
-        string executable,
-        CancellationToken cancellationToken)
-    {
-        if (string.IsNullOrWhiteSpace(executable))
-        {
-            return new DependencyCheckResult(name, false, "Executable is not configured.");
-        }
-
-        try
-        {
-            ProcessResult result = await _processRunner.RunAsync(
-                new ProcessRequest(
-                    executable,
-                    new[] { "--version" },
-                    Path.GetTempPath(),
-                    TimeSpan.FromSeconds(15)),
-                cancellationToken).ConfigureAwait(false);
-            string output = string.IsNullOrWhiteSpace(result.StandardOutput)
-                ? result.StandardError.Trim()
-                : result.StandardOutput.Trim();
-            string message = string.IsNullOrWhiteSpace(output)
-                ? $"Executable started and exited with code {result.ExitCode}."
-                : output.Split('\n', StringSplitOptions.RemoveEmptyEntries)[0].Trim();
-            return new DependencyCheckResult(name, result.ExitCode == 0, message);
-        }
-        catch (Exception exception)
-        {
-            return new DependencyCheckResult(name, false, exception.GetBaseException().Message);
-        }
     }
 
     private static string ReadAuthor(BaseItem item)
