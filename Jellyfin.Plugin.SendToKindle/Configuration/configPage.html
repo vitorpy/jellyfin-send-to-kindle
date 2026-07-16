@@ -68,7 +68,7 @@
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccGamma">Gamma</label>
-                    <input id="KccGamma" is="emby-input" type="text" value="Auto" />
+                    <input id="KccGamma" is="emby-input" type="number" min="0.01" step="0.01" placeholder="Auto" />
                 </div>
                 <div class="inputContainer">
                     <label class="inputLabel inputLabelUnfocused" for="KccSplitter">Splitter</label>
@@ -138,7 +138,7 @@
                 ConversionTimeoutMinutes: 30,
                 Kcc: {
                     Profile: 'KV',
-                    Gamma: 'Auto',
+                    Gamma: '',
                     Splitter: 0,
                     Cropping: 2,
                     CroppingPower: 1,
@@ -170,6 +170,11 @@
             function readNumber(source, name, fallback, minimum, maximum) {
                 const next = Number(readProperty(source, name, fallback));
                 return Number.isFinite(next) && next >= minimum && next <= maximum ? next : fallback;
+            }
+
+            function readGamma(source) {
+                const gamma = String(readProperty(source, 'Gamma', defaults.Kcc.Gamma)).trim();
+                return gamma.toLowerCase() === 'auto' ? '' : gamma;
             }
 
             function showResult(lines) {
@@ -206,7 +211,7 @@
 
                     const kcc = readProperty(config, 'Kcc', defaults.Kcc);
                     setValue('KccProfile', readProperty(kcc, 'Profile', defaults.Kcc.Profile));
-                    setValue('KccGamma', readProperty(kcc, 'Gamma', defaults.Kcc.Gamma));
+                    setValue('KccGamma', readGamma(kcc));
                     setValue('KccSplitter', readNumber(kcc, 'Splitter', defaults.Kcc.Splitter, 0, 2));
                     setValue('KccCropping', readNumber(kcc, 'Cropping', defaults.Kcc.Cropping, 0, 2));
                     setValue(

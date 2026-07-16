@@ -29,7 +29,7 @@ public sealed class KccArgumentBuilder
         AddFlag(arguments, "--upscale", options.Upscale);
         AddFlag(arguments, "--stretch", options.Stretch);
         AddValue(arguments, "--splitter", Math.Clamp(options.Splitter, 0, 2).ToString(CultureInfo.InvariantCulture));
-        AddValue(arguments, "--gamma", string.IsNullOrWhiteSpace(options.Gamma) ? "Auto" : options.Gamma);
+        AddGamma(arguments, options.Gamma);
         AddValue(arguments, "--cropping", Math.Clamp(options.Cropping, 0, 2).ToString(CultureInfo.InvariantCulture));
         AddValue(
             arguments,
@@ -66,6 +66,24 @@ public sealed class KccArgumentBuilder
         {
             arguments.Add(name);
         }
+    }
+
+    private static void AddGamma(ICollection<string> arguments, string gamma)
+    {
+        if (string.IsNullOrWhiteSpace(gamma)
+            || gamma.Equals("Auto", StringComparison.OrdinalIgnoreCase))
+        {
+            return;
+        }
+
+        if (!double.TryParse(gamma, NumberStyles.Float, CultureInfo.InvariantCulture, out double value)
+            || !double.IsFinite(value)
+            || value <= 0)
+        {
+            throw new ArgumentException("KCC gamma must be a positive number or left blank for automatic mode.");
+        }
+
+        AddValue(arguments, "--gamma", value.ToString("0.###", CultureInfo.InvariantCulture));
     }
 
     private static void AddValue(ICollection<string> arguments, string name, string value)

@@ -23,7 +23,7 @@ public sealed class ConfigurationDefaultsTests
         KccOptions options = new();
 
         Assert.Equal("KV", options.Profile);
-        Assert.Equal("Auto", options.Gamma);
+        Assert.Empty(options.Gamma);
         Assert.Equal(0, options.Splitter);
         Assert.Equal(2, options.Cropping);
         Assert.Equal(1, options.CroppingPower);

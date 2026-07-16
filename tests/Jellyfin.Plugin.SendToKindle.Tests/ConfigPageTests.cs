@@ -19,7 +19,7 @@ public sealed class ConfigPageTests
     [InlineData("id=\"AttachmentLimitMegabytes\"", "value=\"18\"")]
     [InlineData("id=\"ConversionTimeoutMinutes\"", "value=\"30\"")]
     [InlineData("id=\"KccProfile\"", "value=\"KV\"")]
-    [InlineData("id=\"KccGamma\"", "value=\"Auto\"")]
+    [InlineData("id=\"KccGamma\"", "placeholder=\"Auto\"")]
     [InlineData("id=\"KccCropping\"", "value=\"2\"")]
     [InlineData("id=\"KccCroppingPower\"", "value=\"1\"")]
     [InlineData("id=\"KccJpegQuality\"", "value=\"85\"")]

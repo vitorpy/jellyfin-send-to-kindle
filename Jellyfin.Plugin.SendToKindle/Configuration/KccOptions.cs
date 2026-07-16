@@ -18,7 +18,7 @@ public sealed class KccOptions
 
     public int Splitter { get; set; }
 
-    public string Gamma { get; set; } = "Auto";
+    public string Gamma { get; set; } = string.Empty;
 
     public int Cropping { get; set; } = 2;
 
